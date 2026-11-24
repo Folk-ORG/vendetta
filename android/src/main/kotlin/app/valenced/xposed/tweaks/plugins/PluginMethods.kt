@@ -2,15 +2,20 @@ package app.valenced.xposed.tweaks.plugins
 
 import app.valenced.bridge.asDelegate
 import app.valenced.core.ValencedJson
+import app.valenced.core.toNative
 import app.valenced.plugins.PluginErrorCodes
 import app.valenced.plugins.PluginFlags
+import app.valenced.plugins.PluginSettingsStore
 import app.valenced.plugins.PluginStatesStore
 import app.valenced.plugins.PluginSystemError
 import app.valenced.plugins.external.requireValidPluginId
 import app.valenced.plugins.pluginLog
+import app.valenced.plugins.settingAt
 import app.valenced.plugins.repos.SourcesStore
 import app.valenced.plugins.toJSPayload
 import app.valenced.xposed.tweak
+import app.valenced.xposed.api.callJSMethod
+import app.valenced.xposed.phoenix.toJson
 import app.valenced.xposed.tweaks.plugins.internal.InternalPluginFlags
 import app.valenced.xposed.tweaks.plugins.internal.internalPluginOf
 import java.io.File
@@ -39,6 +44,50 @@ val pluginMethods by tweak {
             val manifest = failure.manifest ?: return@mapNotNull null
             failure.toJSPayload(manifest, sources[id])
         }
+    }
+
+    pluginSystemMethod("valenced.plugins.settings.read") { args ->
+        val pluginId = args.getOrNull(0) as? String
+            ?: throw PluginSystemError(PluginErrorCodes.INVALID_ARGUMENT, "Expected a plugin ID")
+        val factory = pluginRegistry.factories[pluginId]
+            ?: throw PluginSystemError(PluginErrorCodes.NOT_FOUND, "Unknown plugin: '$pluginId'")
+        PluginSettingsStore.read(pluginPaths(appInfo.dataDir), pluginId, factory.manifest.settings.orEmpty()).toNative()
+    }
+
+    pluginSystemAsyncMethod("valenced.plugins.settings.write") { args ->
+        val pluginId = args.getOrNull(0) as? String
+            ?: throw PluginSystemError(PluginErrorCodes.INVALID_ARGUMENT, "Expected a plugin ID")
+        val key = args.getOrNull(1) as? String
+            ?: throw PluginSystemError(PluginErrorCodes.INVALID_ARGUMENT, "Expected a setting key")
+        val value = toJson(args.getOrNull(2))
+        val factory = pluginRegistry.factories[pluginId]
+            ?: throw PluginSystemError(PluginErrorCodes.NOT_FOUND, "Unknown plugin: '$pluginId'")
+        val paths = pluginPaths(appInfo.dataDir)
+        PluginSettingsStore.write(paths, pluginId, factory.manifest.settings.orEmpty(), key, value)
+        val values = PluginSettingsStore.read(paths, pluginId, factory.manifest.settings.orEmpty())
+        for (path in setOf(key.substringBefore('.'), key)) {
+            val updated = values.settingAt(path)?.toNative()
+            pluginSettingsEvents.emit(pluginId, path, updated)
+            callJSMethod("valenced.plugins.settings.update", listOf(pluginId, path, updated))
+        }
+        null
+    }
+
+    pluginSystemAsyncMethod("valenced.plugins.settings.clear") { args ->
+        val pluginId = args.getOrNull(0) as? String
+            ?: throw PluginSystemError(PluginErrorCodes.INVALID_ARGUMENT, "Expected a plugin ID")
+        val factory = pluginRegistry.factories[pluginId]
+            ?: throw PluginSystemError(PluginErrorCodes.NOT_FOUND, "Unknown plugin: '$pluginId'")
+        PluginSettingsStore.clear(pluginPaths(appInfo.dataDir), pluginId, factory.manifest.settings.orEmpty())
+        for (setting in factory.manifest.settings.orEmpty()) {
+            val defaults = listOf(setting.key to setting.defaultValue) + setting.settings.map { "${setting.key}.${it.key}" to it.default }
+            for ((key, default) in defaults) {
+                val value = default.toNative()
+                pluginSettingsEvents.emit(pluginId, key, value)
+                callJSMethod("valenced.plugins.settings.update", listOf(pluginId, key, value))
+            }
+        }
+        null
     }
 
     /**
@@ -88,6 +137,7 @@ val pluginMethods by tweak {
         // Delete data from all slots.
         File(externalPluginsRoot(appInfo.dataDir), pluginId).deleteRecursively()
         for (dir in pluginStorageDirsOfAllSlots(appInfo.dataDir, pluginId)) dir.deleteRecursively()
+        PluginSettingsStore.delete(pluginPaths(appInfo.dataDir), pluginId)
         PluginStatesStore.removePluginFromAllSlots(pluginPaths(appInfo.dataDir), pluginId)
         runCatching { SourcesStore.remove(pluginId) }
             .onFailure { pluginLog.e("Failed to remove plugin source for $pluginId", it) }

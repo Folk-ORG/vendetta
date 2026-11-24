@@ -1,5 +1,6 @@
 package app.valenced.xposed.tweaks.plugins
 
+import app.valenced.core.toNative
 import app.valenced.Logger
 import app.valenced.logger
 import app.valenced.plugins.DependencyProblemPayload
@@ -7,13 +8,18 @@ import app.valenced.plugins.Plugin
 import app.valenced.plugins.PluginErrorCodes
 import app.valenced.plugins.PluginFlags
 import app.valenced.plugins.PluginScope
+import app.valenced.plugins.PluginSettings
+import app.valenced.plugins.PluginSettingsStore
 import app.valenced.plugins.PluginStatesStore
 import app.valenced.plugins.PluginSystemError
+import app.valenced.plugins.findSetting
 import app.valenced.plugins.pluginLog
+import app.valenced.plugins.settingAt
 import app.valenced.xposed.ScopedDexFinder
 import app.valenced.xposed.api.DexFinder
 import app.valenced.xposed.api.HostScope
 import app.valenced.xposed.api.callJSMethod
+import app.valenced.xposed.phoenix.toJson
 import app.valenced.xposed.runSuspendCatching
 import app.valenced.xposed.tweaks.plugins.internal.InternalPluginFlags
 import java.io.File
@@ -21,6 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonElement
 
 private inline val loaded get() = pluginRegistry.loaded
 
@@ -56,6 +63,31 @@ internal class PluginScopeImpl(
                 "Plugin storage directory is not writable: $this",
             )
         }
+    }
+
+    override val settings: PluginSettings = object : PluginSettings {
+        override fun get(key: String): Any? = settingValue(key).toNative()
+
+        override fun set(key: String, value: Any?) {
+            PluginSettingsStore.write(pluginPaths(appInfo.dataDir), manifest.id, manifest.settings.orEmpty(), key, toJson(value))
+            for (path in setOf(key.substringBefore('.'), key)) {
+                val updated = settingValue(path).toNative()
+                pluginSettingsEvents.emit(manifest.id, path, updated)
+                pluginJobScope.launch {
+                    callJSMethod("valenced.plugins.settings.update", listOf(manifest.id, path, updated))
+                }
+            }
+        }
+
+        override fun subscribe(key: String, listener: (Any?) -> Unit): AutoCloseable {
+            manifest.settings.orEmpty().findSetting(key)
+                ?: throw IllegalArgumentException("Unknown setting '$key' for '${manifest.id}'")
+            return pluginSettingsEvents.subscribe(manifest.id, key, listener)
+        }
+
+        private fun settingValue(key: String): JsonElement =
+            PluginSettingsStore.read(pluginPaths(appInfo.dataDir), manifest.id, manifest.settings.orEmpty()).settingAt(key)
+                ?: throw IllegalArgumentException("Unknown setting '$key' for '${manifest.id}'")
     }
 
     // Arbitrary limit of 1000 errors, should be enough in most cases

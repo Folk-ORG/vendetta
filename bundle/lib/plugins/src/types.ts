@@ -102,6 +102,26 @@ export type PluginApiDecorator<
         keyof PluginApiInLifecycleMap<O> = keyof PluginApiInLifecycleMap<O>,
 > = (plugin: Plugin<O, S>, options: O) => void
 
+export type PluginSettingItemValue =
+    | boolean
+    | number
+    | string
+    | string[]
+    | number[]
+
+export type PluginSettingValue =
+    | PluginSettingItemValue
+    | Record<string, PluginSettingItemValue>
+
+export interface PluginValueSettingsApi {
+    get<T extends PluginSettingValue = PluginSettingValue>(key: string): T
+    set(key: string, value: PluginSettingValue): Promise<void>
+    subscribe<T extends PluginSettingValue = PluginSettingValue>(
+        key: string,
+        listener: (value: T) => void,
+    ): () => void
+}
+
 /** Plugin API available in the `preInit` lifecycle stage. */
 export interface PreInitPluginApi<
     O extends PluginApiExtensionsOptions = PluginApiExtensionsOptions,
@@ -110,6 +130,7 @@ export interface PreInitPluginApi<
     unscoped: UnscopedPreInitPluginApi
     cleanup: PluginCleanupApi
     plugin: Plugin<O, 'PreInit'>
+    settings: PluginValueSettingsApi
 }
 
 /** Plugin API available in the `init` lifecycle stage. */
@@ -150,10 +171,52 @@ export interface PluginManifest {
     description: string
     /** Plugin icon: asset name or `data:` URL. */
     icon?: string
+    /** Native-rendered setting fields. */
+    settings?: PluginSettingDefinition[]
     /** Dependencies keyed by plugin ID. */
     dependencies?: Record<string, PluginDependencyConstraint>
     /** Plugin version. */
     version: PluginVersion
+}
+
+export type PluginSettingType =
+    | 'switch'
+    | 'text'
+    | 'number'
+    | 'select'
+    | 'color'
+    | 'list'
+    | 'object'
+
+export interface PluginSettingOption {
+    value: string
+    label: string
+}
+
+export interface PluginSettingCondition {
+    key: string
+    equals: PluginSettingValue
+}
+
+export interface PluginSettingDefinition {
+    key: string
+    type: PluginSettingType
+    label: string
+    /** Absent for `object`, which takes its value from `settings`. */
+    default?: PluginSettingItemValue
+    description?: string
+    section?: string
+    min?: number
+    max?: number
+    options?: PluginSettingOption[]
+    showIf?: PluginSettingCondition
+    minLength?: number
+    maxLength?: number
+    pattern?: string
+    integer?: boolean
+    item?: 'text' | 'number'
+    maxItems?: number
+    settings?: PluginSettingDefinition[]
 }
 
 export interface PluginVersion {

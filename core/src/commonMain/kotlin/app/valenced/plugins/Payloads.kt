@@ -28,6 +28,7 @@ data class ManifestPayload @OptIn(ExperimentalSerializationApi::class) construct
     val author: String,
     val contributors: List<String>,
     val icon: String?,
+    val settings: List<PluginSettingDefinition>?,
     val dependencies: Map<String, DependencyPayload>,
     val version: VersionPayload,
 )
@@ -59,6 +60,8 @@ data class PluginPayload @OptIn(ExperimentalSerializationApi::class) constructor
     @EncodeDefault(EncodeDefault.Mode.ALWAYS) val errors: List<PluginError> = emptyList(),
     /** Discovery failures: the plugin is known but skipped this session. Absent from the payload when false. */
     val failed: Boolean = false,
+    /** [script] is the React Native `dist.script`, run by Phoenix through its compat layer. Absent from the payload when false. */
+    val compat: Boolean = false,
 )
 
 fun Version.toPayload(): VersionPayload = VersionPayload(nums, label)
@@ -70,6 +73,7 @@ fun PluginManifest.toPayload(): ManifestPayload = ManifestPayload(
     author = author,
     contributors = contributors,
     icon = icon,
+    settings = settings,
     dependencies = dependencies.mapValues { (_, dep) ->
         DependencyPayload(dep.version.toString(), dep.optional)
     },

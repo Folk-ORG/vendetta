@@ -20,6 +20,9 @@ object ValencedConstants {
      * Loaded by [app.valenced.xposed.tweaks.valencedScriptLoader].
      */
     const val BUNDLE_ASSET = "assets://valenced.bundle"
+
+    const val PHOENIX_BUNDLE_ASSET = "valenced.phoenix.bundle"
+    const val PHOENIX_LIBRARY = "valenced_phoenix"
 }
 
 /**

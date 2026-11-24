@@ -99,7 +99,11 @@ const Filters: FilterAndSortActionSheetProps['filters'] = {
         icon: getAssetIdByName('SettingsIcon')!,
         desc: 'Can be toggled or have settings that can be configured.',
         filter: (plugin, meta) =>
-            !isPluginEssential(meta) || plugin.SettingsComponent !== undefined,
+            Boolean(
+                !isPluginEssential(meta) ||
+                    plugin.SettingsComponent !== undefined ||
+                    plugin.manifest.settings?.length,
+            ),
     },
     Internal: {
         icon: ValencedIcon,
@@ -173,7 +177,8 @@ const RecoveryBannerTitleVariant = 'text-md/semibold'
 const useRecoveryBannerStyles = Design.createStyles({
     icon: {
         tintColor: Tokens.default.colors.TEXT_DEFAULT,
-        height: Design.TextStyleSheet[RecoveryBannerTitleVariant].lineHeight,
+        height:
+            Design.TextStyleSheet[RecoveryBannerTitleVariant]?.lineHeight ?? 20,
         width: undefined,
         aspectRatio: (ShieldIcon.width ?? 1) / (ShieldIcon.height ?? 1),
     },
@@ -221,7 +226,8 @@ const RetryIcon = getAssetByName('RetryIcon')!
 const usePendingReloadBannerStyles = Design.createStyles({
     icon: {
         tintColor: Tokens.default.colors.TEXT_DEFAULT,
-        height: Design.TextStyleSheet[RecoveryBannerTitleVariant].lineHeight,
+        height:
+            Design.TextStyleSheet[RecoveryBannerTitleVariant]?.lineHeight ?? 20,
         width: undefined,
         aspectRatio: (RetryIcon.width ?? 1) / (RetryIcon.height ?? 1),
     },
@@ -417,9 +423,7 @@ function Screen({ match, onBrowse }: Partial<PluginsPageProps>) {
                 ListHeaderComponent={ListHeader}
                 plugins={plugins}
             />
-            <BrowseFloatingActionButton
-                onBrowse={onBrowse}
-            />
+            <BrowseFloatingActionButton onBrowse={onBrowse} />
         </>
     )
 }
