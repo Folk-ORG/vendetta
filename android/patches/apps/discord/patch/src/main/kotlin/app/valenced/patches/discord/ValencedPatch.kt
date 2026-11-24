@@ -16,13 +16,13 @@ import org.lsposed.patch.PatchSpec
 import org.lsposed.patch.util.Logger
 
 val valenced = patch("Valenced") {
-    description("Loads Valenced and its plugins into Discord.")
+    description("Loads Vendetta and its plugins into Discord.")
     compatibleWith(DISCORD)
 
     val moduleOption = pathOption(
         "module",
-        title = "Valenced Xposed module",
-        description = "The Valenced Xposed module APK to load.",
+        title = "VendettaXposed module",
+        description = "The VendettaXposed module APK to load.",
         required = true,
     )
 

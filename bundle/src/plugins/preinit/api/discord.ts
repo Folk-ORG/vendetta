@@ -15,7 +15,7 @@ export function init({
         defineLazyProperty(
             plugin.api,
             'logger',
-            () => new Logger(`Valenced > Plugins (${plugin.manifest.id})`),
+            () => new Logger(`Vendetta > Plugins (${plugin.manifest.id})`),
         )
     })
 }

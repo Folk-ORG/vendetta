@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Valenced"
+rootProject.name = "VendettaXposed"
 include(":android")
 include(":android:api")
 include(":bundle")

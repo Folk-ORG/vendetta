@@ -62,7 +62,7 @@ fun showRecoveryAlert(context: Context) {
     ) + DevLoader.recoveryOptions
 
     AlertDialog.Builder(context)
-        .setTitle("Valenced Recovery Options")
+        .setTitle("Vendetta Recovery Options")
         .setItems(options.map { it.first }.toTypedArray()) { _, which -> options[which].second() }
         .show()
 }
@@ -82,10 +82,10 @@ fun PluginScope.addBridgeMethods() {
             val clip = ClipData.newPlainText("Stack Trace", errorString)
 
             AlertDialog.Builder(act)
-                .setTitle("Valenced Error")
+                .setTitle("Vendetta Error")
                 .setMessage(
                     """
-                        Valenced: $version
+                        Vendetta: $version
                         Discord: ${act.versionName()} (${act.versionCode()})
                         Device: ${Build.MANUFACTURER} ${Build.MODEL}
                         
@@ -118,7 +118,7 @@ fun recoveryHook() {
         if (crashRecoveryTriggered) {
             AlertDialog.Builder(it)
                 .setTitle("Booted in Recovery Mode")
-                .setMessage("Valenced detected consecutive crashes and has booted into Recovery Mode.")
+                .setMessage("Vendetta detected consecutive crashes and has booted into Recovery Mode.")
                 .setPositiveButton(android.R.string.ok) { d, _ -> d.dismiss() }
                 .setNeutralButton("Exit Recovery Mode") { _, _ -> reloadApp() }
                 .show()
