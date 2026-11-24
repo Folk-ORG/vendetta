@@ -1,6 +1,6 @@
 import TableRowAssetIcon from '@valenced/components/TableRowAssetIcon'
 import { FullVersion } from '~/constants'
-import ValencedIcon from '~assets/ValencedIcon'
+import VendettaIcon from '~assets/VendettaIcon'
 import { RouteNames, Setting } from '../constants'
 import defer * as ValencedSettingScreen from '../screens/ValencedSettingScreen'
 import type { SettingsItem } from '@valenced/discord/modules/settings'
@@ -8,7 +8,7 @@ import type { SettingsItem } from '@valenced/discord/modules/settings'
 const ValencedSetting: SettingsItem = {
     parent: null,
     type: 'route',
-    IconComponent: () => <TableRowAssetIcon id={ValencedIcon} />,
+    IconComponent: () => <TableRowAssetIcon id={VendettaIcon} />,
     useTitle: () => 'Vendetta',
     useTrailing: () => FullVersion,
     screen: {

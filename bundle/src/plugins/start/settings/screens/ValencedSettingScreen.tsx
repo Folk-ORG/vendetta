@@ -3,7 +3,7 @@ import { styles } from '@valenced/components/_'
 import { Design } from '@valenced/discord/design'
 import { SettingListRenderer } from '@valenced/discord/modules/settings/renderer'
 import { Image, Linking, ScrollView, StyleSheet, View } from 'react-native'
-import ValencedDonate from '~assets/ValencedDonate'
+import VendettaDonate from '~assets/VendettaDonate'
 import { Setting } from '../constants'
 
 const { Button, Card, Stack, Text } = Design
@@ -133,7 +133,7 @@ function DonateCard() {
                         </Stack>
                     </Stack>
                     <Image
-                        source={ValencedDonate}
+                        source={VendettaDonate}
                         style={cardStyles.illustration}
                     />
                 </Stack>

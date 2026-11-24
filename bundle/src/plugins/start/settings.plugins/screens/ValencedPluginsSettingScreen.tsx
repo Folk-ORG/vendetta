@@ -30,7 +30,7 @@ import {
     useState,
 } from 'react'
 import { Image, View } from 'react-native'
-import ValencedIcon from '~assets/ValencedIcon'
+import VendettaIcon from '~assets/VendettaIcon'
 import {
     belongsOnPage,
     matchInfoOfManifest,
@@ -102,7 +102,7 @@ const Filters: FilterAndSortActionSheetProps['filters'] = {
             !isPluginEssential(meta) || plugin.SettingsComponent !== undefined,
     },
     Internal: {
-        icon: ValencedIcon,
+        icon: VendettaIcon,
         desc: 'Included with Vendetta.',
         filter: (_, meta) => isPluginInternal(meta),
     },
