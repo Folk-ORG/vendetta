@@ -28,7 +28,7 @@ if (__DEV__) {
                 performance.now() - tsInit,
             )
             logger.log(
-                `✨ Vendetta. A mod for Discord's mobile apps. (${FullVersion} (${BuildEnvironment}))`,
+                `✨ Vendetta, A mod for Discord's mobile apps. (${FullVersion} (${BuildEnvironment}))`,
             )
         },
     })
