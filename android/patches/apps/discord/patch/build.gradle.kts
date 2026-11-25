@@ -6,3 +6,5 @@ val lspatch =
     }
 
 dependencies { implementation(files(lspatch)) }
+
+reseamStrings { objectName = "app.valenced.patches.discord.DiscordStrings" }

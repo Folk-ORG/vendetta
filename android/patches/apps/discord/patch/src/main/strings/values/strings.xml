@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_patch">Change app name</string>
+    <string name="app_name_patch_description">Shows Discord under another name in the launcher and in Android\'s settings.</string>
+    <string name="app_name_option_title">App name</string>
+    <string name="app_name_option_description">The name the launcher shows.</string>
+    <string name="debuggable_patch">Enable debugging</string>
+    <string name="debuggable_patch_description">Marks Discord debuggable, so adb can run-as it and attach debuggers without root.</string>
+    <string name="package_name_patch">Change package name</string>
+    <string name="package_name_patch_description">Installs Discord under its own package name, so it runs alongside the original.</string>
+    <string name="package_name_option_title">Package name</string>
+    <string name="package_name_option_description">The package name to install Discord under.</string>
+    <string name="valenced_icon_patch">Valenced icon</string>
+    <string name="valenced_icon_patch_description">Puts Discord\'s launcher icon on Valenced\'s cyan.</string>
+    <string name="valenced_patch">Valenced</string>
+    <string name="valenced_patch_description">Loads Vendetta and its plugins into Discord.</string>
+    <string name="module_option_title">VendettaXposed module</string>
+    <string name="module_option_description">The VendettaXposed module APK to load.</string>
+</resources>
