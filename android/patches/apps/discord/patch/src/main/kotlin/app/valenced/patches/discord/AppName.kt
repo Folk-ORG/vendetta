@@ -3,16 +3,17 @@
 
 package app.valenced.patches.discord
 
+import app.reseam.patch.settings.StringRef
 import app.reseam.patch.patch
 
-val changeAppName = patch("Change app name") {
-    description("Shows Discord under another name in the launcher and in Android's settings.")
+val changeAppName = patch(StringRef("Change app name")) {
+    description(StringRef("Shows Discord under another name in the launcher and in Android's settings."))
     compatibleWith(DISCORD)
 
     val appNameOption = stringOption(
         "appName",
-        title = "App name",
-        description = "The name the launcher shows.",
+        title = StringRef("App name"),
+        description = StringRef("The name the launcher shows."),
         default = "Vendetta",
     )
 

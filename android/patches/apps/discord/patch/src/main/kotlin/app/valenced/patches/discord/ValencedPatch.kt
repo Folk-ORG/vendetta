@@ -4,6 +4,7 @@
 package app.valenced.patches.discord
 
 import app.reseam.patch.PatchLogger
+import app.reseam.patch.settings.StringRef
 import app.reseam.patch.patch
 import java.io.File
 import java.security.KeyFactory
@@ -15,14 +16,14 @@ import org.lsposed.patch.KeystoreSpec
 import org.lsposed.patch.PatchSpec
 import org.lsposed.patch.util.Logger
 
-val valenced = patch("Valenced") {
-    description("Loads Vendetta and its plugins into Discord.")
+val valenced = patch(StringRef("Valenced")) {
+    description(StringRef("Loads Vendetta and its plugins into Discord."))
     compatibleWith(DISCORD)
 
     val moduleOption = pathOption(
         "module",
-        title = "VendettaXposed module",
-        description = "The VendettaXposed module APK to load.",
+        title = StringRef("VendettaXposed module"),
+        description = StringRef("The VendettaXposed module APK to load."),
         required = true,
     )
 

@@ -3,10 +3,11 @@
 
 package app.valenced.patches.discord
 
+import app.reseam.patch.settings.StringRef
 import app.reseam.patch.patch
 
-val enableDebugging = patch("Enable debugging") {
-    description("Marks Discord debuggable, so adb can run-as it and attach debuggers without root.")
+val enableDebugging = patch(StringRef("Enable debugging")) {
+    description(StringRef("Marks Discord debuggable, so adb can run-as it and attach debuggers without root."))
     compatibleWith(DISCORD)
     enabledByDefault(false)
 

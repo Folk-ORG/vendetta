@@ -3,6 +3,7 @@
 
 package app.valenced.patches.discord
 
+import app.reseam.patch.settings.StringRef
 import app.reseam.patch.patch
 
 /** Discord's launcher icons, both adaptive icons over a channel colour. */
@@ -15,8 +16,8 @@ private val LAUNCHER_ICONS = listOf(
 private const val BACKGROUND = "valenced_icon_background"
 private const val FOREGROUND = "valenced_icon_foreground"
 
-val valencedIcon = patch("Valenced icon") {
-    description("Puts Discord's launcher icon on Valenced's cyan.")
+val valencedIcon = patch(StringRef("Valenced icon")) {
+    description(StringRef("Puts Discord's launcher icon on Valenced's cyan."))
     compatibleWith(DISCORD)
 
     execute {
