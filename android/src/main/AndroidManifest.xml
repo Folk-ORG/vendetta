@@ -13,7 +13,7 @@
                 android:value="true"/>
         <meta-data
                 android:name="xposeddescription"
-                android:value="✨ Vendetta, A mod for Discord's mobile apps."/>
+                android:value="Vendetta, A mod for Discord's mobile apps."/>
         <meta-data
                 android:name="xposedminversion"
                 android:value="82"/>

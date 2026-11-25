@@ -53,11 +53,10 @@ jobs:
       # the step fails visibly but the JS bundle, APKs and tests still run.
       - name: Install the Reseam CLI and a bundle signing key
         id: reseam
-        continue-on-error: true
         run: |
           mkdir -p "$RUNNER_TEMP/reseam"
           version=$(sed -n 's/.*id("app.reseam.workspace") version "\(.*\)".*/\1/p' android/patches/settings.gradle.kts)
-          curl -fsSL -o "$RUNNER_TEMP/reseam/reseam" "https://cdn.reseam.app/engine/v$version/reseam-linux-x64"
+          curl -fsSL -o "$RUNNER_TEMP/reseam/reseam" "https://cdn.reseam.app/engine/v1.0.1/reseam-linux-x64"
           chmod +x "$RUNNER_TEMP/reseam/reseam"
           "$RUNNER_TEMP/reseam/reseam" bundle keygen --out "$RUNNER_TEMP/reseam/bundle-signing.key"
           echo "RESEAM_BIN=$RUNNER_TEMP/reseam/reseam" >> "$GITHUB_ENV"

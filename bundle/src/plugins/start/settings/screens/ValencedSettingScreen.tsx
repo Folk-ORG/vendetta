@@ -87,8 +87,8 @@ function DonateCard() {
                     {
                         opacity: 0.5,
                         experimental_backgroundImage:
-                            'linear-gradient(166deg, rgba(101, 245, 212, 0.55), rgba(8, 127, 145, 0)), ' +
-                            'linear-gradient(45deg, rgba(7, 93, 120, 0), rgba(0, 127, 173, 0.65))',
+                            'linear-gradient(166deg, rgba(130, 245, 225, 0.55), rgba(58, 184, 186, 0)), ' +
+                            'linear-gradient(45deg, rgba(20, 115, 125, 0), rgba(35, 155, 165, 0.65))',
                     },
                 ]}
             />
